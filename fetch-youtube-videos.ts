@@ -25,6 +25,12 @@ interface Video {
 async function getChannelId(handle: string): Promise<string> {
   const url = `https://www.googleapis.com/youtube/v3/channels?part=id&forHandle=${handle.replace("@", "")}&key=${API_KEY}`;
   const res = await fetch(url);
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(`API error (${res.status}): ${text}`);
+  }
+
   const data = await res.json();
 
   if (!data.items?.length) {
